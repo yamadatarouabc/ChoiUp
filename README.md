@@ -223,3 +223,6 @@ YouTubeや、Udemyなどwebサイトであればqiita, zennなど。
 - ページネーション：kaminari
     
 - 開発環境 : docker
+
+### 画面遷移図
+[Figmaの画面遷移図](https://www.figma.com/design/n8oV8ZjUoGYIyR3qp3dL89/%E7%84%A1%E9%A1%8C?node-id=0-1&t=KowYgw8yjgymI8KK-1)
