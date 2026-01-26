@@ -25,7 +25,7 @@ module App
     # config.eager_load_paths << Rails.root.join("extras")
 
     # エラーが出るので、一時的に:jaの多言語化をコメントアウト
-    # config.i18n.default_locale = :ja
+    config.i18n.default_locale = :ja
 
     # Don't generate system test files.
     config.generators.system_tests = nil
