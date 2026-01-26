@@ -1,0 +1,24 @@
+<header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+  <nav class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <%= link_to "アプリ名", root_path, class: "text-xl font-bold text-gray-800" %>
+      
+      <ul class="flex items-center space-x-6">
+        <% if user_signed_in? %>
+          <%# ログイン中の表示 %>
+          <li><%= link_to "マイページ", "#", class: "text-gray-700 hover:text-gray-900" %></li>
+          <li class="text-gray-700"><%= current_user.display_name %></li>
+          <li>
+            <%= button_to "ログアウト", destroy_user_session_path, 
+                method: :delete, 
+                class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" %>
+          </li>
+        <% else %>
+          <%# 非ログイン中の表示 %>
+          <li><%= link_to "新規登録", new_user_registration_path, class: "text-gray-700 hover:text-gray-900" %></li>
+          <li><%= link_to "ログイン", new_user_session_path, class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" %></li>
+        <% end %>
+      </ul>
+    </div>
+  </nav>
+</header>
