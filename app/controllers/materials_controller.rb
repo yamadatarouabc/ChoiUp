@@ -10,9 +10,9 @@ class MaterialsController < ApplicationController
 
     if @material.save
       # redirect_to material_path(@material), success: '教材を登録しました'
-      redirect_to root_path, notice: '登録ありがとうございます。教材を登録しました'
+      redirect_to root_path, notice: "登録ありがとうございます。教材を登録しました"
     else
-      flash.now[:danger] = '教材の登録に失敗しました'
+      flash.now[:danger] = "教材の登録に失敗しました"
       render :new, status: :unprocessable_entity
     end
   end
