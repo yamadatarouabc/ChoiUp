@@ -17,4 +17,6 @@ Rails.application.routes.draw do
   # root "posts#index"
   root "static_pages#top"
   resource :profile, only: [ :show, :edit, :update ]
+  resources :materials, only: [ :new, :create ]
+  # resources :materials, only: %i[new create show]
 end
