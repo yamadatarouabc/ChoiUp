@@ -1,0 +1,20 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">プロフィール</h1>
+      <%= link_to '編集', edit_profile_path, class: 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' %>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2">メールアドレス</label>
+        <p class="text-gray-900"><%= @user.email %></p>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2">表示名</label>
+        <p class="text-gray-900"><%= @user.display_name %></p>
+      </div>
+    </div>
+  </div>
+</div>
