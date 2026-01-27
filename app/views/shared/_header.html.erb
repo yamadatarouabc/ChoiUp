@@ -7,6 +7,8 @@
         <% if user_signed_in? %>
           <%# ログイン中の表示 %>
           <li><%= link_to "マイページ", "#", class: "text-gray-700 hover:text-gray-900" %></li>
+          <li><%= link_to 'プロフィール', profile_path, class: 'nav-link text-gray-700' %></li>
+          <%# link_to 'プロフィール編集', edit_profile_path, class: "text-gray-700 hover:text-gray-900" %>
           <li class="text-gray-700"><%= current_user.display_name %></li>
           <li>
             <%= button_to "ログアウト", destroy_user_session_path, 
