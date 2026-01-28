@@ -6,4 +6,22 @@ class Material < ApplicationRecord
                     message: "は正しい形式で入力してください"
                   }
   validates :description, length: { maximum: 5000 }, allow_blank: true
+
+  # カスタムバリデーション: スキームの確認
+  validate :url_must_be_http_or_https
+
+  private
+
+  def url_must_be_http_or_https
+    return if url.blank?
+
+    begin
+      uri = URI.parse(url)
+      unless %w[http https].include?(uri.scheme)
+        errors.add(:url, "はhttpまたはhttpsで始まる必要があります")
+      end
+    rescue URI::InvalidURIError
+      errors.add(:url, "の形式が正しくありません")
+    end
+  end
 end
