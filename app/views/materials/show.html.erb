@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="material-info">
+    <div class="material-detail-item">
+      <span class="material-label">教材のタイトル:</span>
+      <span class="material-value"><%= @material.title %></span>
+    </div>
+    
+    <div class="material-detail-item">
+      <span class="material-label">教材のURL:</span>
+      <span class="material-value">
+        <%= link_to @material.url, @material.url, 
+                    target: "_blank", 
+                    rel: "noopener noreferrer",
+                    class: "external-link" %>
+        <span class="badge badge-secondary ml-2">外部リンク</span>
+      </span>
+    </div>
+    
+    <div class="material-detail-item">
+      <span class="material-label">教材の説明:</span>
+      <div class="material-value">
+        <%= simple_format(@material.description) %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 評価一覧は次のステップで追加 -->
+</div>
