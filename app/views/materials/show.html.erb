@@ -14,7 +14,8 @@
       </div>
       
       <!-- アクセスボタン（固定テキストを使用） -->
-      <%= link_to "教材ページを開く", @material.url, 
+      <%# link_to "教材ページを開く", @material.url,・・・念のために残しておく%>
+      <%= link_to "教材ページを開く", safe_material_url(@material),
                   target: "_blank", 
                   rel: "noopener noreferrer",
                   class: "inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200" %>
