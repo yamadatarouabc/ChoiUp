@@ -1,28 +1,40 @@
-<div class="container">
-  <div class="material-info">
-    <div class="material-detail-item">
-      <span class="material-label">教材のタイトル:</span>
-      <span class="material-value"><%= @material.title %></span>
-    </div>
-    
-    <div class="material-detail-item">
-      <span class="material-label">教材のURL:</span>
-      <span class="material-value">
-        <%= link_to @material.url, @material.url, 
-                    target: "_blank", 
-                    rel: "noopener noreferrer",
-                    class: "external-link" %>
-        <span class="badge badge-secondary ml-2">外部リンク</span>
-      </span>
-    </div>
-    
-    <div class="material-detail-item">
-      <span class="material-label">教材の説明:</span>
-      <div class="material-value">
-        <%= simple_format(@material.description) %>
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6"><%= @material.title %></h1>
+  
+  <div class="bg-white shadow rounded-lg p-6 mb-6">
+    <!-- URL表示セクション -->
+    <div class="mb-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">教材のURL</h2>
+      
+      <!-- URLを表示（コピー可能） -->
+      <div class="mb-3 p-3 bg-gray-50 rounded border border-gray-200">
+        <code class="text-sm break-all text-gray-700">
+          <%= @material.url %>
+        </code>
       </div>
+      
+      <!-- アクセスボタン（固定テキストを使用） -->
+      <%= link_to "教材ページを開く", @material.url, 
+                  target: "_blank", 
+                  rel: "noopener noreferrer",
+                  class: "inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200" %>
+      <span class="ml-2 text-xs text-gray-500">※外部サイトが開きます</span>
     </div>
+    
+    <!-- 説明セクション -->
+    <% if @material.description.present? %>
+      <div class="mt-6 pt-6 border-t border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">説明</h2>
+        <div class="prose max-w-none text-gray-700">
+          <%= simple_format(@material.description) %>
+        </div>
+      </div>
+    <% end %>
   </div>
   
-  <!-- 評価一覧は次のステップで追加 -->
+  <!-- 評価一覧セクション（次のステップで実装） -->
+  <div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-lg font-semibold text-gray-800 mb-3">評価一覧</h2>
+    <p class="text-gray-500 text-sm">※評価機能は次のステップで実装予定です</p>
+  </div>
 </div>
