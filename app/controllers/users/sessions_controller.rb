@@ -26,7 +26,7 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   def after_sign_in_path_for(resource)
-    root_path
+    materials_path
   end
 
   def after_sign_out_path_for(resource_or_scope)
