@@ -24,6 +24,8 @@ class MaterialsController < ApplicationController
 
   def show
     @material = Material.find(params[:id])
+    # @reviews = @material.reviews.order(created_at: :desc)
+    # 後でkaminariを使ってページネーション予定
   end
 
   private
