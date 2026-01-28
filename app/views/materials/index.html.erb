@@ -1,0 +1,30 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">教材一覧</h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @materials.each do |material| %>
+      <div class="border rounded-lg p-6 shadow-sm hover:shadow-md transition">
+        <h2 class="text-xl font-semibold mb-2">
+          <%= link_to material.title, material_path(material), class: "text-blue-600 hover:text-blue-800" %>
+        </h2>
+        
+        <p class="text-gray-600 mb-4">
+          <%= truncate(material.description, length: 100) %>
+        </p>
+        
+        <%# taget: "blank"とrel: "noopener noreferrerについて本当に問題ないか再検討が必要"%>
+        
+        <% if material.url.present? %>
+          <%= link_to "外部リンク", material.url, 
+              target: "_blank", 
+              rel: "noopener noreferrer",
+              class: "text-sm text-gray-500 hover:text-gray-700" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  
+  <% if @materials.empty? %>
+    <p class="text-center text-gray-500 mt-8">まだ教材が登録されていません</p>
+  <% end %>
+</div>

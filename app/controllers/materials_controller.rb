@@ -1,6 +1,11 @@
 class MaterialsController < ApplicationController
   before_action :authenticate_user!
 
+  def index
+    @materials = Material.order(created_at: :desc)
+    # @materials = Material.order(created_at: :desc).page(params[:page])
+  end
+
   def new
     @material = Material.new
   end
@@ -15,6 +20,10 @@ class MaterialsController < ApplicationController
       flash.now[:danger] = "教材の登録に失敗しました"
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def show
+    @material = Material.find(params[:id])
   end
 
   private
