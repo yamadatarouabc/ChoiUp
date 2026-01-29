@@ -10,6 +10,11 @@ class Material < ApplicationRecord
   # カスタムバリデーション: スキームの確認
   validate :url_must_be_http_or_https
 
+  # Ransackで検索可能な属性を定義
+  def self.ransackable_attributes(auth_object = nil)
+    [ "title" ]
+  end
+
   private
 
   def url_must_be_http_or_https

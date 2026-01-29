@@ -2,7 +2,10 @@ class MaterialsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @materials = Material.order(created_at: :desc)
+    @q = Material.ransack(params[:q])
+    @materials = @q.result(distinct: true).order(created_at: :desc)
+    # 検索キーワードの有無を判定
+    @search_keyword = params.dig(:q, :title_cont)
     # @materials = Material.order(created_at: :desc).page(params[:page])
   end
 
