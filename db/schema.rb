@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_27_123507) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_30_052911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,6 +21,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_27_123507) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["url"], name: "index_materials_on_url"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "material_id", null: false
+    t.integer "start_level", null: false
+    t.integer "difficulty_rating", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["material_id"], name: "index_reviews_on_material_id"
+    t.index ["user_id", "material_id"], name: "index_reviews_on_user_id_and_material_id", unique: true
+    t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -35,4 +48,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_27_123507) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "reviews", "materials"
+  add_foreign_key "reviews", "users"
 end

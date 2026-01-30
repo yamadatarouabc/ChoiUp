@@ -27,6 +27,8 @@ class MaterialsController < ApplicationController
 
   def show
     @material = Material.find(params[:id])
+    # N+1問題を防ぐため includes を使用
+    @material.reviews.includes(:user)
     # @reviews = @material.reviews.order(created_at: :desc)
     # 後でkaminariを使ってページネーション予定
   end

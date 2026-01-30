@@ -1,4 +1,14 @@
 ja:
+  time:
+    formats:
+      default: "%Y年%m月%d日 %H:%M"
+      short: "%Y/%m/%d %H:%M"
+      long: "%Y年%m月%d日(%a) %H時%M分%S秒"
+  date:
+    formats:
+      default: "%Y年%m月%d日"
+      short: "%Y/%m/%d"
+      long: "%Y年%m月%d日(%a)"
   errors:
     messages:
       blank: "を入力してください"
@@ -6,3 +16,25 @@ ja:
       too_short: "は%{count}文字以上で入力してください"
       taken: "はすでに存在します"
       invalid: "は不正な値です"
+  activerecord:
+    models:
+      review: 評価
+    attributes:
+      review:
+        start_level: 学習開始時のレベル
+        difficulty_rating: 体感難易度
+        comment: コメント
+    enums:
+      review:
+        start_level:
+          complete_beginner: "全くの初心者（この分野に初めて触れる）"
+          entry_level: "入門レベル（基本的な用語は知っている）"
+          basic_level: "基礎レベル（簡単な実装ができる）"
+          intermediate_level: "中級レベル（一人で機能を作れる）"
+          advanced_level: "上級レベル（設計や最適化ができる）"
+        difficulty_rating:
+          very_easy: "とても優しい（サクサク進められる）"
+          easy: "優しい（初心者でも安心）"
+          just_right: "ちょうどいい（適度に考えさせられる）"
+          difficult: "難しい（じっくり取り組む必要がある）"
+          very_difficult: "とても難しい（かなり手応えがある）"

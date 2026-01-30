@@ -1,4 +1,5 @@
 class Material < ApplicationRecord
+  has_many :reviews, dependent: :destroy
   validates :title, presence: true, length: { maximum: 100 }
   validates :url, presence: true,
                   format: {

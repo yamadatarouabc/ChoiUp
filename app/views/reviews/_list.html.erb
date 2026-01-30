@@ -1,0 +1,9 @@
+<% if reviews.any? %>
+  <div class="space-y-4">
+    <% reviews.each do |review| %>
+      <%= render 'reviews/item', review: review %>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-gray-500 text-sm text-center py-4">まだ評価が投稿されていません</p>
+<% end %>

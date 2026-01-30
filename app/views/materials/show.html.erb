@@ -33,9 +33,20 @@
     <% end %>
   </div>
   
-  <!-- 評価一覧セクション（次のステップで実装） -->
+  <!-- 評価一覧セクション -->
   <div class="bg-white shadow rounded-lg p-6">
-    <h2 class="text-lg font-semibold text-gray-800 mb-3">評価一覧</h2>
-    <p class="text-gray-500 text-sm">※評価機能は次のステップで実装予定です</p>
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">評価一覧</h2>
+    
+    <!-- 評価投稿フォーム（ログインユーザーのみ表示） -->
+    <% if user_signed_in? %>
+      <%= render 'reviews/form', material: @material, review: @material.reviews.build %>
+    <% else %>
+      <p class="text-gray-500 text-sm mb-4">※評価を投稿するにはログインが必要です</p>
+    <% end %>
+    
+    <!-- 評価一覧の表示 -->
+    <div class="mt-6">
+      <%= render 'reviews/list', reviews: @material.reviews.includes(:user) %>
+    </div>
   </div>
 </div>
