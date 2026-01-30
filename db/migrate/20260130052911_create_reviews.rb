@@ -6,7 +6,7 @@ class CreateReviews < ActiveRecord::Migration[7.2]
       t.integer :start_level, null: false
       t.integer :difficulty_rating, null: false
       t.text :comment
-      
+
       t.timestamps
     end
 
