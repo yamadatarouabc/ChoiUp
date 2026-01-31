@@ -12,7 +12,7 @@ class ReviewsController < ApplicationController
       # redirect_to @material, alert: "評価の投稿に失敗しました: #{@review.errors.full_messages.join(', ')}"
       flash.now[:alert] = "評価の投稿に失敗しました: #{@review.errors.full_messages.join(', ')}"
       @reviews = @material.reviews.includes(:user).order(created_at: :desc)
-      render 'materials/show', status: :unprocessable_entity      
+      render "materials/show", status: :unprocessable_entity
     end
   end
 
