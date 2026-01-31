@@ -17,20 +17,25 @@
   <!-- 検索結果のヘッダー -->
   <div class="mb-6">
     <% if @search_keyword.present? %>
-      <h1 class="text-2xl font-bold text-gray-800 mb-2">
+      <h1 class="text-2xl font-bold text-gray-300 mb-2">
         "<%= @search_keyword %>" の検索結果
       </h1>
-      <p class="text-gray-600">
+      <p class="text-gray-500">
         <%= @materials.count %>件の教材が見つかりました
       </p>
     <% else %>
-      <h1 class="text-2xl font-bold text-gray-800 mb-2">
+      <h1 class="text-2xl font-bold text-gray-300 mb-2">
         教材一覧
       </h1>
-      <p class="text-gray-600">
+      <p class="text-gray-500">
         全 <%= @materials.count %>件の教材
       </p>
     <% end %>
+  </div>
+
+  <div class="flex justify-end mb-6">
+    <%= link_to "新規教材を登録", new_material_path,
+        class: "px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition shadow-md whitespace-nowrap" %>
   </div>
 
   <!-- 検索結果の表示 -->
