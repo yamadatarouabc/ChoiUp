@@ -1,5 +1,5 @@
 class MaterialsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [ :new, :create ]
 
   def index
     @q = Material.ransack(params[:q])
@@ -28,7 +28,10 @@ class MaterialsController < ApplicationController
   def show
     @material = Material.find(params[:id])
     # N+1問題を防ぐため includes を使用
-    @material.reviews.includes(:user)
+    # @material.reviews.includes(:user)
+    # インスタンス変数に代入するか、ビューで直接使う形にする
+    @reviews = @material.reviews.includes(:user).order(created_at: :desc)
+
     # @reviews = @material.reviews.order(created_at: :desc)
     # 後でkaminariを使ってページネーション予定
   end
