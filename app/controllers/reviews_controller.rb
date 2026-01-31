@@ -7,9 +7,12 @@ class ReviewsController < ApplicationController
     @review.user = current_user
 
     if @review.save
-      redirect_to @material, notice: "評価を投稿しました"
+      redirect_to material_path(@material), notice: "評価を投稿しました"
     else
-      redirect_to @material, alert: "評価の投稿に失敗しました: #{@review.errors.full_messages.join(', ')}"
+      # redirect_to @material, alert: "評価の投稿に失敗しました: #{@review.errors.full_messages.join(', ')}"
+      flash.now[:alert] = "評価の投稿に失敗しました: #{@review.errors.full_messages.join(', ')}"
+      @reviews = @material.reviews.includes(:user).order(created_at: :desc)
+      render 'materials/show', status: :unprocessable_entity      
     end
   end
 
