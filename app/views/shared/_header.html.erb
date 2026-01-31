@@ -1,12 +1,12 @@
 <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
   <nav class="container mx-auto px-4 py-4">
     <div class="flex items-center justify-between">
-      <%= link_to "ChoiUp", root_path, class: "text-xl font-bold text-gray-800" %>
+      <%= link_to "ChoiUp", root_path, class: "text-2xl font-bold text-blue-500 hover:text-blue-600" %>
       
       <ul class="flex items-center space-x-6">
         <% if user_signed_in? %>
           <%# ログイン中の表示 %>
-          <li><%= link_to "マイページ", "#", class: "text-gray-700 hover:text-gray-900" %></li>
+          <li><%# link_to "マイページ", "#", class: "text-gray-700 hover:text-gray-900" %></li>
           <li><%= link_to 'プロフィール', profile_path, class: 'nav-link text-gray-700' %></li>
           <%# link_to 'プロフィール編集', edit_profile_path, class: "text-gray-700 hover:text-gray-900" %>
           <li class="text-gray-700"><%= current_user.display_name %></li>
