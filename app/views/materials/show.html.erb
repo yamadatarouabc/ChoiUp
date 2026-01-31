@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8 max-w-4xl">
+<div class="container mx-auto px-4 py-8 max-w-4xl bg-white">
   <h1 class="text-3xl font-bold text-gray-900 mb-6"><%= @material.title %></h1>
   
   <div class="bg-white shadow rounded-lg p-6 mb-6">
@@ -37,16 +37,22 @@
   <div class="bg-white shadow rounded-lg p-6">
     <h2 class="text-lg font-semibold text-gray-800 mb-4">評価一覧</h2>
     
-    <!-- 評価投稿フォーム（ログインユーザーのみ表示） -->
+    <!-- 評価投稿フォーム -->
     <% if user_signed_in? %>
-      <%= render 'reviews/form', material: @material, review: @material.reviews.build %>
+      <% if @material.reviews.exists?(user: current_user) %>
+        <p class="text-gray-500 text-sm mb-4 bg-yellow-50 p-3 rounded">
+          ※この教材には既に評価を投稿済みです
+        </p>
+      <% else %>
+        <%= render 'reviews/form', material: @material, review: Review.new %>
+      <% end %>
     <% else %>
       <p class="text-gray-500 text-sm mb-4">※評価を投稿するにはログインが必要です</p>
     <% end %>
     
     <!-- 評価一覧の表示 -->
     <div class="mt-6">
-      <%= render 'reviews/list', reviews: @material.reviews.includes(:user) %>
+      <%= render 'reviews/list', reviews: @reviews %>
     </div>
   </div>
 </div>
