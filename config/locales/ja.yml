@@ -16,14 +16,27 @@ ja:
       too_short: "は%{count}文字以上で入力してください"
       taken: "はすでに存在します"
       invalid: "は不正な値です"
+      confirmation: "と%{attribute}の入力が一致しません"  # ← この行を追加
   activerecord:
     models:
       review: 評価
+      user: ユーザー  # ← この行も追加しておくと良いです
     attributes:
+      user:  # ← このセクションも追加
+        email: メールアドレス
+        display_name: 表示名
+        password: パスワード
+        password_confirmation: パスワード確認
       review:
         start_level: 学習開始時のレベル
         difficulty_rating: 体感難易度
         comment: コメント
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              taken: "の登録に失敗しました。入力内容をご確認ください"  # ← 追加
     enums:
       review:
         start_level:

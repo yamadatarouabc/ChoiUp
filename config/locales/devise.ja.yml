@@ -4,8 +4,14 @@ ja:
       invalid: "メールアドレスまたはパスワードが正しくありません。"
       not_found_in_database: "メールアドレスまたはパスワードが正しくありません。"
       unauthenticated: "ログインしてください。"
+      already_authenticated: "すでにログインしています。"
     sessions:
       signed_in: "ログインしました。"
       signed_out: "ログアウトしました。"
     registrations:
       signed_up: "アカウント登録を受け付けました。"
+  errors:
+    messages:
+      not_saved:
+        one: "1件のエラーが発生したため %{resource} は保存されませんでした"
+        other: "%{count}件のエラーが発生したため %{resource} は保存されませんでした"
