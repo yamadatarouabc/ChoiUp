@@ -55,4 +55,10 @@
       <%= render 'reviews/list', reviews: @reviews %>
     </div>
   </div>
+
+  <!-- 一覧に戻る -->
+  <div class="mt-8">
+    <%= link_to "一覧に戻る", materials_path,
+                class: "inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors" %>
+  </div>
 </div>
