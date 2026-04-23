@@ -16,7 +16,7 @@
 docker compose up
 ```
 
-`web` コンテナ起動時に `bundle install → yarn install → rails db:prepare → bin/dev`（JS/CSS ウォッチャー込み）が自動実行される。アプリは http://localhost:3000 で起動。
+`web` コンテナ起動時に `bundle install → yarn install → rails db:prepare → tmp/pids/server.pid 削除 → bin/dev`（JS/CSS ウォッチャー込み）が自動実行される。`tmp/pids/server.pid` の削除はコンテナ再起動時の起動失敗を防ぐため。アプリは http://localhost:3000 で起動。
 
 ### コンテナ内でのコマンド実行
 
@@ -29,6 +29,7 @@ docker compose exec web bundle exec brakeman                   # セキュリテ
 
 ### Docker 構成メモ
 
+- docker compose の構成ファイル: `compose.yml`（`docker-compose.yml` ではない）
 - `Dockerfile.dev`: Ruby 3.3.6 ベース、Node 20 + Yarn をインストール
 - ソースコードは `.:/app` でマウント（ホストの変更がリアルタイムに反映）
 - Gem は `bundle_data` volume にキャッシュ（コンテナ再起動時の再インストール不要）
@@ -58,11 +59,11 @@ resources :profiles
 
 - TailwindCSS + DaisyUI でスタイリング
 - Hotwire（Turbo + Stimulus）を使用。esbuild でバンドル
-- CSS は `rails-tailwindcss` gem でビルド（`bin/dev` 起動時にウォッチ）
+- CSS は `tailwindcss-rails` gem でビルド（`bin/dev` 起動時にウォッチ）
 
 ### CI（`.github/workflows/ci.yml`）
 
-2 ジョブが並列実行：brakeman セキュリティスキャン、rubocop Lint。
+3 ジョブが並列実行：brakeman セキュリティスキャン（`scan_ruby`）、rubocop Lint（`lint`）、RSpec 実行（`test`）。
 
 ## 技術スタック
 
