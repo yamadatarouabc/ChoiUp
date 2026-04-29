@@ -112,7 +112,8 @@ RSpec.describe "Materials", type: :request do
 
       it "422 を返し、エラー表示用 flash がレンダリングされる" do
         post materials_path, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        # Rack 3.x で :unprocessable_entity は deprecated、:unprocessable_content に改名
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("教材の登録に失敗しました")
       end
     end
