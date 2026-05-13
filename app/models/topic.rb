@@ -5,9 +5,9 @@ class Topic < ApplicationRecord
   validates :name, presence: true, uniqueness: true, length: { maximum: 50 }
 
   def self.find_or_create_from_input(input)
-    normalized = input.to_s.strip.downcase
-    return nil if normalized.empty?
+    normalized_name = input.to_s.strip.downcase
+    return nil if normalized_name.empty?
 
-    find_or_create_by!(name: normalized)
+    find_or_create_by!(name: normalized_name)
   end
 end
