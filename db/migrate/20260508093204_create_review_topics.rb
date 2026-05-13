@@ -6,6 +6,6 @@ class CreateReviewTopics < ActiveRecord::Migration[7.2]
 
       t.timestamps
     end
-    add_index :review_topics, [:review_id, :topic_id], unique: true
+    add_index :review_topics, [ :review_id, :topic_id ], unique: true
   end
 end
