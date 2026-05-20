@@ -2,6 +2,12 @@ class Review < ApplicationRecord
   belongs_to :user
   belongs_to :material
 
+  has_many :review_topics, dependent: :destroy
+  has_many :topics, through: :review_topics
+
+  # フォームから受け取る「カンマ区切りの分野文字列」。DB カラムではない仮想属性。
+  attr_accessor :topic_names
+
   # enumの定義
   enum :start_level, {
     complete_beginner: 1,  # 全くの初心者

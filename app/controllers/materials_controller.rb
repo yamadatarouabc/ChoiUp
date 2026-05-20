@@ -30,7 +30,7 @@ class MaterialsController < ApplicationController
     # N+1問題を防ぐため includes を使用
     # @material.reviews.includes(:user)
     # インスタンス変数に代入するか、ビューで直接使う形にする
-    @reviews = @material.reviews.includes(:user).order(created_at: :desc)
+    @reviews = @material.reviews.includes(:user, :topics).order(created_at: :desc)
 
     # @reviews = @material.reviews.order(created_at: :desc)
     # 後でkaminariを使ってページネーション予定

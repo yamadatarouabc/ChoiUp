@@ -7,3 +7,9 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+# 初期 Topic を投入する。
+# 既に同名の Topic が存在する場合は新規作成しない（find_or_create_by! による冪等性）。
+%w[ruby rails javascript typescript react git docker sql html css linux database].each do |name|
+  Topic.find_or_create_by!(name: name)
+end
