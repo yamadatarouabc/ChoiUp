@@ -7,6 +7,7 @@ class ReviewsController < ApplicationController
     @review.user = current_user
 
     if @review.save
+      assign_topics(@review, @review.topic_names)
       redirect_to material_path(@material), notice: "評価を投稿しました"
     else
       # redirect_to @material, alert: "評価の投稿に失敗しました: #{@review.errors.full_messages.join(', ')}"
@@ -24,6 +25,12 @@ class ReviewsController < ApplicationController
   end
 
   def review_params
-    params.require(:review).permit(:start_level, :difficulty_rating, :comment)
+    params.require(:review).permit(:start_level, :difficulty_rating, :comment, :topic_names)
+  end
+
+  def assign_topics(review, topic_names)
+    review.topics = topic_names.to_s.split(",").filter_map do |name|
+      Topic.find_or_create_from_input(name)
+    end.uniq
   end
 end

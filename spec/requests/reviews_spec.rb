@@ -115,5 +115,58 @@ RSpec.describe "Reviews", type: :request do
         expect(Review.last.user).to eq(user)
       end
     end
+
+    context "ログイン済み + topic_names を含む" do
+      before { sign_in user }
+
+      it "カンマ区切り 2 件で Topic 2 件が紐づく（正常系）" do
+        post material_reviews_path(material), params: {
+          review: valid_params[:review].merge(topic_names: "ruby, rails")
+        }
+        expect(Review.last.topics.pluck(:name)).to contain_exactly("ruby", "rails")
+      end
+      it "topic_names が空文字でも Review は作成され、topic は 0 件（境界・正常系）" do
+        expect {
+          post material_reviews_path(material), params: {
+            review: valid_params[:review].merge(topic_names: "")
+          }
+        }.to change(Review, :count).by(1)
+        expect(Review.last.topics).to be_empty
+      end
+      it "topic_names 未指定でも Review は作成される（境界・正常系）" do
+        expect {
+          post material_reviews_path(material), params: valid_params
+        }.to change(Review, :count).by(1)
+        expect(Review.last.topics).to be_empty
+      end
+      it "同じレビュー内 'ruby, ruby' は Topic 1 件のみ紐づく（uniq による重複除去）" do
+        post material_reviews_path(material), params: {
+          review: valid_params[:review].merge(topic_names: "ruby, ruby")
+        }
+        expect(Review.last.topics.pluck(:name)).to eq([ "ruby" ])
+      end
+      it "同じレビュー内 'Ruby, ruby' は Topic 1 件のみ紐づく（正規化 + uniq）" do
+        post material_reviews_path(material), params: {
+          review: valid_params[:review].merge(topic_names: "Ruby, ruby")
+        }
+        expect(Review.last.topics.pluck(:name)).to eq([ "ruby" ])
+      end
+      it "同じレビュー内 'ruby, , rails' は空白要素を無視して 2 件紐づく（filter_map）" do
+        post material_reviews_path(material), params: {
+          review: valid_params[:review].merge(topic_names: "ruby, , rails")
+        }
+        expect(Review.last.topics.pluck(:name)).to contain_exactly("ruby", "rails")
+      end
+      it "異なるレビューで 'Ruby' と 'ruby' を送ると同じ Topic に寄る（Topic マスタの正規化）" do
+        post material_reviews_path(material), params: {
+          review: valid_params[:review].merge(topic_names: "Ruby")
+        }
+        other_material = create(:material)
+        post material_reviews_path(other_material), params: {
+          review: valid_params[:review].merge(topic_names: "ruby")
+        }
+        expect(Topic.where(name: "ruby").count).to eq(1)
+      end
+    end
   end
 end
