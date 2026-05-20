@@ -68,6 +68,31 @@ RSpec.describe Review, type: :model do
     end
   end
 
+  describe "topics アソシエーション（has_many :through :review_topics）" do
+    it "review.topics に Topic を代入すると関連が引ける（正常系）" do
+      review = create(:review)
+      topic1 = create(:topic)
+      topic2 = create(:topic)
+      review.topics = [ topic1, topic2 ]
+      expect(review.reload.topics).to contain_exactly(topic1, topic2)
+    end
+
+    it "review を destroy すると紐づく review_topics も destroy される（dependent: :destroy）" do
+      review = create(:review)
+      topic1 = create(:topic)
+      review.topics = [ topic1 ]
+      expect { review.destroy }.to change(ReviewTopic, :count).by(-1)
+    end
+    it "同じ Topic を 2 回紐づけようとすると複合 unique で 2 件目は無効（境界・異常系）" do
+      review = create(:review)
+      topic1 = create(:topic)
+      review.review_topics.create!(topic: topic1)
+      second_review_topic = review.review_topics.build(topic: topic1)
+      expect(second_review_topic).not_to be_valid
+      expect(second_review_topic.errors[:review_id]).to be_present
+    end
+  end
+
   describe "一意性制約（user_id と material_id の組み合わせ）" do
     let(:user) { create(:user) }
     let(:material) { create(:material) }
