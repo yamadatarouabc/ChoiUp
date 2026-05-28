@@ -7,6 +7,9 @@ class MaterialsController < ApplicationController
     # 検索キーワードの有無を判定
     @search_keyword = params.dig(:q, :title_cont)
     # @materials = Material.order(created_at: :desc).page(params[:page])
+
+    # ログインユーザーには「あなたへのおすすめ」を、未ログインには空を渡す
+    @recommended = user_signed_in? ? MaterialRecommender.new(current_user).recommend : Material.none
   end
 
   def new
