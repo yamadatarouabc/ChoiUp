@@ -14,6 +14,29 @@
     </div>
   </div>
 
+  <!-- あなたへのおすすめ（ログインユーザーで履歴があるときだけ表示） -->
+  <% if @recommended.any? %>
+    <div class="mb-10">
+      <h2 class="text-2xl font-bold text-gray-300 mb-4">あなたへのおすすめ</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% @recommended.each do |material| %>
+          <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-3 line-clamp-2">
+              <%= link_to material.title, material_path(material), class: "hover:text-blue-600 transition" %>
+            </h3>
+            <% if material.description.present? %>
+              <p class="text-gray-600 mb-4 line-clamp-3"><%= material.description %></p>
+            <% end %>
+            <div class="flex items-center justify-between text-sm text-gray-500">
+              <span><%= material.created_at.strftime("%Y年%m月%d日") %></span>
+              <%= link_to "詳細を見る", material_path(material), class: "text-blue-500 hover:text-blue-700 font-medium" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <!-- 検索結果のヘッダー -->
   <div class="mb-6">
     <% if @search_keyword.present? %>
