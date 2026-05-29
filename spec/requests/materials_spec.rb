@@ -7,6 +7,12 @@ RSpec.describe "Materials", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it "ログイン済みでも 200 を返す（おすすめ処理を含めてエラーにならない・正常系）" do
+      sign_in create(:user)
+      get materials_path
+      expect(response).to have_http_status(:ok)
+    end
+
     it "登録済みの教材が body に含まれる（正常系）" do
       create(:material, title: "Ruby 入門")
       create(:material, title: "Python 入門")
