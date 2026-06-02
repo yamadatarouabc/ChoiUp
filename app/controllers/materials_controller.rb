@@ -37,6 +37,9 @@ class MaterialsController < ApplicationController
 
     # @reviews = @material.reviews.order(created_at: :desc)
     # 後でkaminariを使ってページネーション予定
+
+    # 投稿フォーム用の空 Review。
+    @review = Review.new
   end
 
   private

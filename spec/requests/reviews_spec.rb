@@ -76,6 +76,18 @@ RSpec.describe "Reviews", type: :request do
       end
     end
 
+    context "ログイン済み + 一部不正（コメントは入力済み）で失敗したとき（入力保持）" do
+      before { sign_in user }
+
+      it "入力したコメントがフォームに残って再表示される" do
+        post material_reviews_path(material), params: {
+          review: valid_params[:review].merge(start_level: "")
+        }
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("良かった")
+      end
+    end
+
     context "ログイン済み + 一意性違反（同一 user と 同一 material で 2 回 POST）" do
       before { sign_in user }
 

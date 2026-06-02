@@ -16,6 +16,14 @@ class Material < ApplicationRecord
     [ "title" ]
   end
 
+  # この教材が、指定ユーザーによって既にレビューされているかを返す。
+  # user が nil（未ログイン）なら false。
+  def reviewed_by?(user)
+    return false unless user
+
+    reviews.exists?(user: user)
+  end
+
   private
 
   def url_must_be_http_or_https
