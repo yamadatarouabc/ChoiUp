@@ -39,7 +39,7 @@
     
     <!-- 評価投稿フォーム -->
     <% if user_signed_in? %>
-      <% if @material.reviews.exists?(user: current_user) %>
+      <% if @material.reviewed_by?(current_user) %>
         <p class="text-gray-500 text-sm mb-4 bg-yellow-50 p-3 rounded">
           ※この教材には既に評価を投稿済みです
         </p>

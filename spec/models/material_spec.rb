@@ -110,6 +110,34 @@ RSpec.describe Material, type: :model do
     end
   end
 
+  describe "#reviewed_by?" do
+    it "user が nil なら false（未ログイン想定）" do
+      material = create(:material)
+      expect(material.reviewed_by?(nil)).to be false
+    end
+
+    it "その user がこの教材をレビュー済みなら true" do
+      material = create(:material)
+      user = create(:user)
+      create(:review, material: material, user: user)
+      expect(material.reviewed_by?(user)).to be true
+    end
+
+    it "その user がこの教材を未レビューなら false" do
+      material = create(:material)
+      user = create(:user)
+      expect(material.reviewed_by?(user)).to be false
+    end
+
+    it "user が別教材をレビュー済みでも、この教材が未レビューなら false" do
+      material = create(:material)
+      other_material = create(:material)
+      user = create(:user)
+      create(:review, material: other_material, user: user)
+      expect(material.reviewed_by?(user)).to be false
+    end
+  end
+
   describe "Ransack 設定" do
     it "ransackable_attributes は title のみを返す" do
       expect(Material.ransackable_attributes).to eq [ "title" ]
