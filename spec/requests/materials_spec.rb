@@ -51,6 +51,55 @@ RSpec.describe "Materials", type: :request do
       get material_path(id: nonexistent_id)
       expect(response).to have_http_status(:not_found)
     end
+
+    # レビュー一覧（_item）の編集/削除コントロールが、閲覧者の状態で出し分けされるか
+    describe "レビューの編集/削除コントロールの表示（_item）" do
+      let(:owner) { create(:user) }                                  # レビューの所有者
+      let!(:review) { create(:review, material: material, user: owner) }
+      # 削除ボタンは button_to の turbo_confirm 文言で判定（パスは編集リンクの部分文字列になり誤判定するため）
+      let(:delete_button_text) { "この評価を削除しますか？" }
+
+      context "所有者がログインしているとき" do
+        before { sign_in owner }
+
+        it "編集リンクが表示される" do
+          get material_path(material)
+          expect(response.body).to include(edit_material_review_path(material, review))
+        end
+
+        it "削除ボタンが表示される" do
+          get material_path(material)
+          expect(response.body).to include(delete_button_text)
+        end
+      end
+
+      context "非所有者がログインしているとき" do
+        let(:viewer) { create(:user) }
+        before { sign_in viewer }
+
+        it "編集リンクが表示されない" do
+          get material_path(material)
+          expect(response.body).not_to include(edit_material_review_path(material, review))
+        end
+
+        it "削除ボタンが表示されない" do
+          get material_path(material)
+          expect(response.body).not_to include(delete_button_text)
+        end
+      end
+
+      context "未ログインのとき" do
+        it "編集リンクが表示されない" do
+          get material_path(material)
+          expect(response.body).not_to include(edit_material_review_path(material, review))
+        end
+
+        it "削除ボタンが表示されない" do
+          get material_path(material)
+          expect(response.body).not_to include(delete_button_text)
+        end
+      end
+    end
   end
 
   describe "GET /materials/new" do

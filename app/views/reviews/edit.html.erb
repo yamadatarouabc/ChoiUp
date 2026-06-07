@@ -1,0 +1,10 @@
+<div class="container mx-auto px-4 py-8 max-w-4xl bg-white">
+  <h1 class="text-2xl font-bold text-gray-900 mb-6">評価を編集</h1>
+
+  <%= render 'reviews/form', material: @material, review: @review %>
+
+  <div class="mt-6">
+    <%= link_to "教材ページに戻る", material_path(@material),
+                class: "inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors" %>
+  </div>
+</div>

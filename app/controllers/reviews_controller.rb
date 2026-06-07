@@ -1,5 +1,6 @@
 class ReviewsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_own_review, only: [ :edit, :update, :destroy ]
 
   def create
     set_material
@@ -17,8 +18,31 @@ class ReviewsController < ApplicationController
     end
   end
 
+  def edit
+    @review.topic_names = @review.topics.map(&:name).join(", ")
+  end
+
+  def update
+    if @review.update(review_params)
+      assign_topics(@review, @review.topic_names)
+      redirect_to material_path(@material), notice: "評価を更新しました"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @review.destroy!
+    redirect_to material_path(@material), notice: "評価を削除しました"
+  end
 
   private
+
+  # current_user 配下から探すので、他人のレビューは RecordNotFound（404）になり認可を兼ねる
+  def set_own_review
+    @review = current_user.reviews.find(params[:id])
+    @material = @review.material
+  end
 
   def set_material
     @material = Material.find(params[:material_id])
