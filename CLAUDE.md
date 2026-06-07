@@ -58,7 +58,7 @@ docker compose exec web bundle exec brakeman                   # セキュリテ
 
 - **User**（Devise）— display_name（最大 50 文字）を持つ
 - **Material** — title（最大 100 文字）、URL（http/https のみ）、description（最大 5000 文字）
-- **Review** — User → Material の評価。`start_level`（学習開始レベル 1〜5）と `difficulty_rating`（難易度評価 1〜5）を持つ enum。同一ユーザーと教材の組み合わせは一意制約あり。`has_many :topics, through: :review_topics` で分野（topic）を多対多で持ち、フォーム入力用の仮想属性 `topic_names`（カンマ区切り文字列）を持つ
+- **Review** — User → Material の評価。`start_level`（学習開始レベル 1〜5）と `difficulty_rating`（難易度評価 1〜5）を持つ enum。同一ユーザーと教材の組み合わせは一意制約あり。`has_many :topics, through: :review_topics` で分野（topic）を多対多で持ち、フォーム入力用の仮想属性 `topic_names`（カンマ区切り文字列）を持つ。レビューの編集・削除は作成者本人のみ可（`ReviewsController#set_own_review` が `current_user.reviews.find` で自分のレビューに限定し、他人の id は `RecordNotFound`＝404）
 - **Topic** — 分野マスタ。name（最大 50 文字・一意）。`find_or_create_from_input` で入力を strip + downcase 正規化して引き当て / 新規作成
 - **ReviewTopic** — Review と Topic の中間テーブル。`[review_id, topic_id]` の複合一意制約
 
@@ -75,7 +75,7 @@ docker compose exec web bundle exec brakeman                   # セキュリテ
 root → materials#index
 resource  :profile,   only: [:show, :edit, :update]            # 単数 resource
 resources :materials, only: [:index, :new, :create, :show]     # 検索: Ransack（タイトル部分一致）
-  resources :reviews, only: [:create]                          # materials にネスト
+  resources :reviews, only: [:create, :edit, :update, :destroy] # materials にネスト。編集/削除は所有者のみ
 ```
 
 ### フロントエンド
