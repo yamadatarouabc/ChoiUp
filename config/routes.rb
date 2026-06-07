@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   root "materials#index"
   resource :profile, only: [ :show, :edit, :update ]
   resources :materials, only: [ :index, :new, :create, :show ] do
-    resources :reviews, only: [ :create ]
+    resources :reviews, only: [ :create, :edit, :update, :destroy ]
   end
   # resources :materials, only: %i[new create show]
 end
