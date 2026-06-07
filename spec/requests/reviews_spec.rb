@@ -181,4 +181,150 @@ RSpec.describe "Reviews", type: :request do
       end
     end
   end
+
+  # ===== edit / update / destroy（レビューの編集・削除）=====
+
+  describe "GET /materials/:material_id/reviews/:id/edit" do
+    context "自分のレビュー" do
+      let(:review) { create(:review, material: material, user: user) }
+      before { sign_in user }
+
+      it "200 で編集フォームが開ける" do
+        get edit_material_review_path(material, review)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "既存 topic がカンマ区切りでフォームに初期表示される" do
+        review.topics = [ Topic.find_or_create_from_input("ruby"), Topic.find_or_create_from_input("rails") ]
+        get edit_material_review_path(material, review)
+        expect(response.body).to match(/ruby, rails|rails, ruby/)
+      end
+    end
+
+    context "他人のレビュー" do
+      before { sign_in user }
+
+      it "404 を返す（他人のレビューは編集フォームを開けない）" do
+        other_user = create(:user)
+        other_user_review = create(:review, material: material, user: other_user)
+        get edit_material_review_path(material, other_user_review)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "未ログイン" do
+      it "ログイン画面にリダイレクトする" do
+        review = create(:review, material: material, user: user)
+        get edit_material_review_path(material, review)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe "PATCH /materials/:material_id/reviews/:id" do
+    let(:review) { create(:review, material: material, user: user, comment: "編集前のコメント") }
+
+    context "自分のレビュー（正常）" do
+      before { sign_in user }
+
+      it "レベル・難易度・コメントを更新できる" do
+        patch material_review_path(material, review), params: {
+          review: { start_level: "advanced_level", difficulty_rating: "very_difficult", comment: "編集後のコメント" }
+        }
+        review.reload
+        expect(review.start_level).to eq("advanced_level")
+        expect(review.difficulty_rating).to eq("very_difficult")
+        expect(review.comment).to eq("編集後のコメント")
+      end
+
+      it "topic の付け替えが反映される" do
+        review.topics = [ Topic.find_or_create_from_input("ruby") ]
+        patch material_review_path(material, review), params: {
+          review: { start_level: "basic_level", difficulty_rating: "just_right", topic_names: "rails, docker" }
+        }
+        expect(review.reload.topics.pluck(:name)).to contain_exactly("rails", "docker")
+      end
+
+      it "更新成功後は教材ページにリダイレクトし notice が立つ" do
+        patch material_review_path(material, review), params: {
+          review: { start_level: "basic_level", difficulty_rating: "just_right" }
+        }
+        expect(response).to redirect_to(material_path(material))
+        expect(flash[:notice]).to include("評価を更新しました")
+      end
+    end
+
+    context "自分のレビュー（不正）" do
+      before { sign_in user }
+
+      it "更新失敗時は 422 で edit が再描画される" do
+        patch material_review_path(material, review), params: {
+          review: { start_level: "", difficulty_rating: "just_right" }
+        }
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("評価を編集")
+      end
+    end
+
+    context "他人のレビュー" do
+      before { sign_in user }
+
+      it "404 を返し、内容が変わらない" do
+        other_user = create(:user)
+        other_user_review = create(:review, material: material, user: other_user, comment: "他人のコメント")
+        patch material_review_path(material, other_user_review), params: {
+          review: { start_level: "advanced_level", difficulty_rating: "very_difficult", comment: "乗っ取り" }
+        }
+        expect(response).to have_http_status(:not_found)
+        expect(other_user_review.reload.comment).to eq("他人のコメント")
+      end
+    end
+
+    context "未ログイン" do
+      it "ログイン画面にリダイレクトする" do
+        patch material_review_path(material, review), params: valid_params
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe "DELETE /materials/:material_id/reviews/:id" do
+    context "自分のレビュー" do
+      let!(:review) { create(:review, material: material, user: user) }
+      before { sign_in user }
+
+      it "削除でき、Review が 1 件減る" do
+        expect {
+          delete material_review_path(material, review)
+        }.to change(Review, :count).by(-1)
+      end
+
+      it "削除後は教材ページにリダイレクトし、成功メッセージ(notice)がセットされる" do
+        delete material_review_path(material, review)
+        expect(response).to redirect_to(material_path(material))
+        expect(flash[:notice]).to include("評価を削除しました")
+      end
+    end
+
+    context "他人のレビュー" do
+      before { sign_in user }
+
+      it "404 を返し、削除されない" do
+        other_user = create(:user)
+        other_user_review = create(:review, material: material, user: other_user)
+        expect {
+          delete material_review_path(material, other_user_review)
+        }.not_to change(Review, :count)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "未ログイン" do
+      it "ログイン画面にリダイレクトする" do
+        review = create(:review, material: material, user: user)
+        delete material_review_path(material, review)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
 end
