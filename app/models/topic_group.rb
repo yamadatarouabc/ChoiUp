@@ -1,8 +1,5 @@
-class Topic < ApplicationRecord
-  belongs_to :topic_group, optional: true
-
-  has_many :review_topics, dependent: :destroy
-  has_many :reviews, through: :review_topics
+class TopicGroup < ApplicationRecord
+  has_many :topics
 
   validates :name, presence: true, uniqueness: true, length: { maximum: 50 }
 
