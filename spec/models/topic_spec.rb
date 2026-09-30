@@ -49,6 +49,31 @@ RSpec.describe Topic, type: :model do
       end
     end
 
+    context "グループの紐付け" do
+      it "新規入力で同名のグループも作られて紐づく" do
+        topic = Topic.find_or_create_from_input("ruby")
+        expect(topic.topic_group.name).to eq("ruby")
+      end
+
+      it "同名のグループが既にあれば、グループは増えず、分野はそのグループに属する" do
+        existing_topic_group = create(:topic_group, name: "ruby")
+
+        expect {
+          expect(Topic.find_or_create_from_input("ruby").topic_group).to eq(existing_topic_group)
+        }.not_to change(TopicGroup, :count)
+      end
+
+      it "大文字を含む入力でも正規化された名前のグループに属する" do
+        topic = Topic.find_or_create_from_input("Ruby")
+        expect(topic.topic_group.name).to eq("ruby")
+      end
+
+      it "前後に空白を含む入力でも正規化された名前のグループに属する" do
+        topic = Topic.find_or_create_from_input("  ruby  ")
+        expect(topic.topic_group.name).to eq("ruby")
+      end
+    end
+
     context "異常系（空入力）" do
       it "空文字で nil を返す" do
         expect(Topic.find_or_create_from_input("")).to be_nil
@@ -60,6 +85,24 @@ RSpec.describe Topic, type: :model do
 
       it "nil 入力で nil を返す" do
         expect(Topic.find_or_create_from_input(nil)).to be_nil
+      end
+
+      it "空文字ではグループも作られない" do
+        expect {
+          Topic.find_or_create_from_input("")
+        }.not_to change(TopicGroup, :count)
+      end
+
+      it "空白のみの入力ではグループも作られない" do
+        expect {
+          Topic.find_or_create_from_input("   ")
+        }.not_to change(TopicGroup, :count)
+      end
+
+      it "nil 入力ではグループも作られない" do
+        expect {
+          Topic.find_or_create_from_input(nil)
+        }.not_to change(TopicGroup, :count)
       end
     end
   end

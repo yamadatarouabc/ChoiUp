@@ -9,9 +9,10 @@
 #   end
 
 # 初期 Topic を投入する。
-# 既に同名の Topic が存在する場合は新規作成しない（find_or_create_by! による冪等性）。
+# 既に同名の Topic が存在する場合は新規作成しない（find_or_create_from_input による冪等性）。
+# 同名の TopicGroup も同時に用意される。
 %w[ruby rails javascript typescript react git docker sql html css linux database].each do |name|
-  Topic.find_or_create_by!(name: name)
+  Topic.find_or_create_from_input(name)
 end
 
 # 開発環境専用のサンプルデータ。
