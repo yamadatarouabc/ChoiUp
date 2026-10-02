@@ -23,4 +23,8 @@ class TopicGroup < ApplicationRecord
 
     topic_group
   end
+
+  def self.delete_unused!
+    where.missing(:topics).destroy_all
+  end
 end

@@ -39,6 +39,10 @@ TOPIC_GROUPINGS.each do |group_name, kinds|
   TopicGroup.assign_topics!(group_name, kinds.values.flatten)
 end
 
+# 割り当ての結果、属する分野が 0 件になったグループを削除する。
+# 必ず割り当ての後に呼ぶ。
+TopicGroup.delete_unused!
+
 # 開発環境専用のサンプルデータ。
 # おすすめ機能（MaterialRecommender）の動作確認を手入力なしで行うために投入する。
 if Rails.env.development?

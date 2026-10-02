@@ -110,6 +110,44 @@ RSpec.describe TopicGroup, type: :model do
     end
   end
 
+  describe ".delete_unused!" do
+    it "分野が 1 つも属していないグループが削除される" do
+      unused_topic_group = create(:topic_group)
+
+      expect { TopicGroup.delete_unused! }.to change(TopicGroup, :count).by(-1)
+      expect(TopicGroup.exists?(unused_topic_group.id)).to be false
+    end
+
+    it "分野が属しているグループは削除されない" do
+      topic_group = create(:topic_group)
+      create(:topic, topic_group: topic_group)
+
+      TopicGroup.delete_unused!
+
+      expect(TopicGroup.exists?(topic_group.id)).to be true
+    end
+
+    it "2 回実行しても結果が同じ（冪等）" do
+      create(:topic_group)
+      TopicGroup.delete_unused!
+      topic_group_count = TopicGroup.count
+
+      TopicGroup.delete_unused!
+
+      expect(TopicGroup.count).to eq(topic_group_count)
+    end
+
+    it "分野が属しているグループを直接削除しようとすると DB が拒否する（外部キーの restrict）" do
+      topic_group = create(:topic_group)
+      create(:topic, topic_group: topic_group)
+
+      # on_delete: :restrict では PG::RestrictViolation が投げられ、
+      # Rails はこれを ActiveRecord::StatementInvalid としてラップする。
+      # （NO ACTION なら ActiveRecord::InvalidForeignKey になる）
+      expect { topic_group.destroy }.to raise_error(ActiveRecord::StatementInvalid)
+    end
+  end
+
   describe "アソシエーション" do
     describe "has_many :topics" do
       it "紐づく topic を取得できる" do
