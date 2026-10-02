@@ -72,6 +72,44 @@ RSpec.describe TopicGroup, type: :model do
     end
   end
 
+  describe ".assign_topics!" do
+    it "宣言に従って分野の所属グループが変わる" do
+      javascript_group = create(:topic_group, name: "javascript")
+      js = Topic.find_or_create_from_input("js")
+
+      TopicGroup.assign_topics!("javascript", %w[js])
+
+      expect(js.reload.topic_group).to eq(javascript_group)
+    end
+
+    it "宣言に書かれた分野が存在しなければ分野も作られてグループに属する" do
+      expect {
+        TopicGroup.assign_topics!("javascript", %w[ecmascript])
+      }.to change(Topic, :count).by(1)
+
+      expect(Topic.find_by(name: "ecmascript").topic_group.name).to eq("javascript")
+    end
+
+    it "2 回実行しても結果が同じ（冪等）" do
+      TopicGroup.assign_topics!("javascript", %w[js javascript])
+      topic_count = Topic.count
+      topic_group_count = TopicGroup.count
+
+      TopicGroup.assign_topics!("javascript", %w[js javascript])
+
+      expect(Topic.count).to eq(topic_count)
+      expect(TopicGroup.count).to eq(topic_group_count)
+    end
+
+    it "宣言に書かれていない分野は自分の名前のグループに属したまま変化しない" do
+      ruby = Topic.find_or_create_from_input("ruby")
+
+      TopicGroup.assign_topics!("javascript", %w[js javascript])
+
+      expect(ruby.reload.topic_group.name).to eq("ruby")
+    end
+  end
+
   describe "アソシエーション" do
     describe "has_many :topics" do
       it "紐づく topic を取得できる" do

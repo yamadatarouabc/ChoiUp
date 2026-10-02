@@ -15,6 +15,30 @@
   Topic.find_or_create_from_input(name)
 end
 
+# 分野をどうまとめるかの宣言。キーがグループ名（＝代表値）。
+#
+#   spelling … 表記ゆれ型。同じものの別の書き方。分割の対象にならない
+#   similar  … 近似型。別物だが実用上まとめている。使われ方次第で将来分ける
+#
+# 両者はコード上まったく同じ扱いをする。区別は開発者向けの記録。
+# 分割を検討するときに「近似型のものだけ」を取り出せるようにするため分けている。
+TOPIC_GROUPINGS = {
+  "javascript" => {
+    spelling: %w[js javascript jabascript],
+    similar: %w[ecmascript]
+  },
+  "typescript" => {
+    spelling: %w[ts typescript]
+  },
+  "rails" => {
+    spelling: [ "rails", "ror", "ruby on rails" ]
+  }
+}
+
+TOPIC_GROUPINGS.each do |group_name, kinds|
+  TopicGroup.assign_topics!(group_name, kinds.values.flatten)
+end
+
 # 開発環境専用のサンプルデータ。
 # おすすめ機能（MaterialRecommender）の動作確認を手入力なしで行うために投入する。
 if Rails.env.development?
