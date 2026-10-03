@@ -50,7 +50,7 @@ RSpec.describe MaterialRecommender do
 
         expect(MaterialRecommender.new(user).recommend).not_to include(javascript_material)
       end
-      it "matched_review_topics_count の多い順にソートされる（三角測量）" do
+      it "matched_review_topic_groups_count の多い順にソートされる（三角測量）" do
         user = create(:user)
         ruby = create(:topic, name: "ruby")
         rails = create(:topic, name: "rails")
@@ -172,6 +172,50 @@ RSpec.describe MaterialRecommender do
         end
 
         expect(MaterialRecommender.new(user).recommend(limit: -1).to_a.size).to eq(1)
+      end
+    end
+
+    context "グループ単位の集計" do
+      it "同じグループに属する別の分野でレビューされた教材も推薦される" do
+        user = create(:user)
+        javascript_group = create(:topic_group, name: "javascript")
+        js = create(:topic, name: "js", topic_group: javascript_group)
+        javascript = create(:topic, name: "javascript", topic_group: javascript_group)
+
+        # user の興味は javascript
+        user_material = create(:material)
+        create(:review, user: user, material: user_material).topics << javascript
+
+        # 他ユーザーが js（同じグループの別分野）でレビューした未レビュー教材
+        other_user = create(:user)
+        unreviewed_material = create(:material)
+        create(:review, user: other_user, material: unreviewed_material).topics << js
+
+        expect(MaterialRecommender.new(user).recommend).to include(unreviewed_material)
+      end
+
+      it "1 つのレビューが同じグループの分野を複数持ってもマッチ数は 1 になる（二重カウントの防止）" do
+        user = create(:user)
+        javascript_group = create(:topic_group, name: "javascript")
+        js = create(:topic, name: "js", topic_group: javascript_group)
+        javascript = create(:topic, name: "javascript", topic_group: javascript_group)
+        ecmascript = create(:topic, name: "ecmascript", topic_group: javascript_group)
+        ruby = create(:topic, name: "ruby")
+
+        # user の興味は javascript グループ と ruby
+        user_material = create(:material)
+        create(:review, user: user, material: user_material).topics << [ javascript, ruby ]
+
+        # material_a: 1 レビューが同一グループの 3 分野を持つ → 正しくはマッチ 1（二重カウントなら 3）
+        material_a = create(:material)
+        create(:review, user: create(:user), material: material_a).topics << [ js, javascript, ecmascript ]
+
+        # material_b: 別々の 2 レビューが ruby を持つ → マッチ 2
+        material_b = create(:material)
+        2.times { create(:review, user: create(:user), material: material_b).topics << ruby }
+
+        # 二重カウントがあると material_a が 3 となり順序が反転する
+        expect(MaterialRecommender.new(user).recommend.to_a).to eq([ material_b, material_a ])
       end
     end
   end
