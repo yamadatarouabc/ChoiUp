@@ -97,6 +97,23 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "role" do
+    it "想定の 2 種類が enum として定義されている" do
+      expect(User.roles.keys).to contain_exactly("general", "admin")
+    end
+
+    it "新しく作ったユーザーは general（既定値・正常系）" do
+      # 既定値が general であることが本番の守りになっている。
+      # 権限者は明示的に設定した人だけで、既定では誰も管理画面に入れない。
+      expect(build(:user).role).to eq "general"
+    end
+
+    it "範囲外の値を代入すると ArgumentError（enum 違反・異常系）" do
+      user = build(:user)
+      expect { user.role = "superuser" }.to raise_error(ArgumentError)
+    end
+  end
+
   describe "Devise モジュール構成" do
     # 認証に関する設定の明文化。誤って外すと auth まわりの挙動が変わるため、構成自体を担保する。
     it ":database_authenticatable, :registerable, :recoverable, :rememberable, :validatable がすべて有効である" do
