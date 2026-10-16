@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   # root "static_pages#top"
   root "materials#index"
   resource :profile, only: [ :show, :edit, :update ]
+  namespace :admin do
+    resources :topic_groups, only: [ :index ]
+  end
   resources :materials, only: [ :index, :new, :create, :show ] do
     resources :reviews, only: [ :create, :edit, :update, :destroy ]
   end
