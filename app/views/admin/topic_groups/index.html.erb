@@ -1,0 +1,29 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-gray-300 mb-6">分野とグループ</h1>
+
+  <% if @topic_groups.empty? %>
+    <p class="text-gray-400">グループがありません。</p>
+  <% end %>
+
+  <% @topic_groups.each do |topic_group| %>
+    <section class="mb-6">
+      <h2 class="text-xl font-bold text-gray-300"><%= topic_group.name %></h2>
+
+      <p class="text-sm text-gray-400 mb-2">
+        分野 <%= topic_group.topics.size %> 件
+        <% if topic_group.topics.size <= 1 %>
+          <span class="badge badge-warning ml-2">未整理</span>
+        <% end %>
+      </p>
+
+      <ul class="list-disc list-inside">
+        <% topic_group.topics.sort_by(&:name).each do |topic| %>
+          <li class="text-gray-300">
+            <%= topic.name %>
+            <span class="text-gray-400">（使用 <%= @review_counts.fetch(topic.id, 0) %> 件）</span>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+</div>
