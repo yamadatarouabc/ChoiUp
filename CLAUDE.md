@@ -59,7 +59,7 @@ docker compose exec web bundle exec brakeman                   # セキュリテ
 
 6 つのモデルが中心。
 
-- **User**（Devise）— display_name（最大 50 文字）を持つ
+- **User**（Devise）— display_name（最大 50 文字）を持つ。権限を表す `role`（enum。`general: 0` / `admin: 100`。既定値は `general`）を持ち、`admin` のユーザーだけが管理画面に入れる
 - **Material** — title（最大 100 文字）、URL（http/https のみ）、description（最大 5000 文字）
 - **Review** — User → Material の評価。`start_level`（学習開始レベル 1〜5）と `difficulty_rating`（難易度評価 1〜5）を持つ enum。同一ユーザーと教材の組み合わせは一意制約あり。`has_many :topics, through: :review_topics` で分野（topic）を多対多で持ち、フォーム入力用の仮想属性 `topic_names`（カンマ区切り文字列）を持つ。レビューの編集・削除は作成者本人のみ可（`ReviewsController#set_own_review` が `current_user.reviews.find` で自分のレビューに限定し、他人の id は `RecordNotFound`＝404）
 - **Topic** — 分野マスタ。name（最大 50 文字・一意）。`belongs_to :topic_group`（`topic_group_id` は `null: false`）。`find_or_create_from_input` で入力を strip + downcase 正規化して引き当て / 新規作成し、**同時にグループも用意する**。`Topic.create` を直接呼ぶと NOT NULL 制約違反で失敗するため、**分野の作成は必ず `find_or_create_from_input` を通す**
@@ -84,6 +84,9 @@ docker compose exec web bundle exec brakeman                   # セキュリテ
 ```
 root → materials#index
 resource  :profile,   only: [:show, :edit, :update]            # 単数 resource
+namespace :admin do                                            # 管理画面。権限者（role が admin）だけが入れる
+  resources :topic_groups, only: [:index]                      # 分野とグループの一覧
+end
 resources :materials, only: [:index, :new, :create, :show]     # 検索: Ransack（タイトル部分一致）
   resources :reviews, only: [:create, :edit, :update, :destroy] # materials にネスト。編集/削除は所有者のみ
 ```
